@@ -3,8 +3,8 @@
 <head>
   <title><%= title %></title>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.2/angular-material.min.css">
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel='stylesheet' href='/stylesheets/svg-sprite-navigation.css' />
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" href="/stylesheets/sprites/sprite-navigation-grey600.css" />
 </head>
 <body ng-controller="AppCtrl" layout="row" class="md-theme-indigo">
 
@@ -12,15 +12,14 @@
 		<md-toolbar>
 			<div class="md-toolbar-tools">
 				<button class="docs-menu-icon" ng-show="!isSidebarLocked()" aria-label="Close Menu" ng-click="closeSidebar()">
-					<div class="svg-ic_close_24px svg-icon-dims"></div>
+					<div class="icon-navigation-grey600 icon-navigation-grey600-ic_close_grey600_24dp"></div>
 				</button>
 				<h1>Sidebar</h1>
 			</div>
 		</md-toolbar>
 		
 		<md-content class="md-padding">
-			<md-button ng-click="closeSidebar()" class="md-primary" hide-gt-md>Close Sidenav Left</md-button>
-			<p hide-md show-gt-md>This sidenav is locked open on your device. To go back, narrow your display.</p>
+			The sidebar
 		</md-content>
 	</md-sidenav>
 
@@ -29,7 +28,7 @@
 		<md-toolbar>
 			<div class="md-toolbar-tools">
 				<button class="docs-menu-icon" hide-gt-md aria-label="Toggle Menu" ng-click="toggleSidebar()">
-					<div class="svg-ic_menu_24px svg-icon-dims"></div>
+					<div class="icon-navigation-grey600 icon-navigation-grey600-ic_menu_grey600_24dp"></div>
 				</button>
 				<h1>Main Toolbar</h1>
 			</div>
