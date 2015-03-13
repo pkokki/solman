@@ -34,7 +34,7 @@
 			</div>
 		</md-toolbar>
 			
-		<md-content>
+		<md-content class="md-padding">
 			<ng-view></ng-view>
 		</md-content>
 	</div>
@@ -61,6 +61,8 @@
 
 <script type="text/ng-template" id="/spaces.html">
   Search: <input type="text" ng-model="search.name">
+  
+  <p>See <a href="http://codepen.io/zavoloklom/pen/IGkDz">here</a></p>
   <ul>
     <li ng-repeat="space in spaces | filter: search">
 		<input type="checkbox" ng-model="space.completed" ng-change="update($index)">
@@ -116,7 +118,6 @@
 		};
 		
 		$scope.isSidebarLocked = function() {
-			$log.debug($mdMedia('gt-md'));
 			return $mdMedia('gt-md');
 		}
 	}])
