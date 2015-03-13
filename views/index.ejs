@@ -1,11 +1,123 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html ng-app="app">
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+
+<ng-view></ng-view>
+
+<!-- Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
+
+<!-- Template -->
+<script type="text/ng-template" id="/index.html">
+	<ul>
+		<li><a href="#/spaces">Spaces</a></li>
+	</ul>
+</script>
+
+<script type="text/ng-template" id="/spaces.html">
+  Search: <input type="text" ng-model="search.name">
+  <ul>
+    <li ng-repeat="space in spaces | filter: search">
+		<input type="checkbox" ng-model="space.completed" ng-change="update($index)">
+		
+		<a ng-show="!editing[$index]" href="#/spaces/{{space._id}}">{{space.name}}</a>
+		<button ng-show="!editing[$index]" ng-click="edit($index)">edit</button>
+		
+		<input ng-show="editing[$index]" type="text" ng-model="space.name">
+		<button ng-show="editing[$index]" ng-click="update($index)">Update</button>
+		<button ng-show="editing[$index]" ng-click="cancel($index)">Cancel</button>
+    </li>
+  </ul>
+  New space <input type="text" ng-model="newSpace"><button ng-click="save()">Create</button>
+</script>
+
+<script type="text/ng-template" id="/spaceDetails.html">
+  <h1>{{ space.name }}</h1>
+  completed: <input type="checkbox" ng-model="space.completed">
+  description: <textarea ng-model="space.description"></textarea>
+  <button ng-click="update()">Update</button>
+  <a href="#/spaces">Cancel</a>
+</script>
+
+<script>
+  angular.module('app', ['ngRoute', 'ngResource'])
+
+    //---------------
+    // Services
+    //---------------
+
+    .factory('Spaces', ['$resource', function($resource){
+		return $resource('/api/spaces/:id', null, {
+			'update': { method:'PUT' }
+		});
+    }])
+
+    //---------------
+    // Controllers
+    //---------------
+
+    .controller('SpaceController', ['$scope', 'Spaces', function ($scope, Spaces) {
+		$scope.spaces = Spaces.query();
+		$scope.editing = [];
+		$scope.save = function(){
+			if(!$scope.newSpace || $scope.newSpace.length < 1) return;
+			var space = new Spaces({ name: $scope.newSpace, completed: false });
+			space.$save(function(){
+				$scope.spaces.push(space);
+				$scope.newSpace = ''; // clear textbox
+			});
+		}
+		
+		$scope.update = function(index){
+			var space = $scope.spaces[index];
+			Spaces.update({id: space._id}, space);
+			$scope.editing[index] = false;
+		}
+		
+		$scope.edit = function(index){
+			$scope.editing[index] = angular.copy($scope.spaces[index]);
+		}
+		
+		$scope.cancel = function(index){
+			$scope.spaces[index] = angular.copy($scope.editing[index]);
+			$scope.editing[index] = false;
+		}
+    }])
+
+    .controller('SpaceDetailCtrl', ['$scope', '$location', '$routeParams', 'Spaces', function ($scope, $location, $routeParams, Spaces) {
+		$scope.space = Spaces.get({id: $routeParams.id });
+		$scope.update = function(){
+			Spaces.update({id: $scope.space._id}, $scope.space, function(){
+				$location.url('/spaces');
+			});
+		}
+    }])
+
+    //---------------
+    // Routes
+    //---------------
+
+    .config(['$routeProvider', function ($routeProvider) {
+      $routeProvider
+		.when('/', {
+			templateUrl: '/index.html',
+		})
+        .when('/spaces', {
+          templateUrl: '/spaces.html',
+          controller: 'SpaceController'
+        })
+        .when('/spaces/:id', {
+          templateUrl: '/spaceDetails.html',
+          controller: 'SpaceDetailCtrl'
+       });
+    }]);
+</script>
+
+</body>
 </html>

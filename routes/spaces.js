@@ -22,26 +22,27 @@ router.post('/', function(req, res, next) {
 
 /* GET /spaces/id */
 router.get('/:id', function(req, res, next) {
-  Space.findById(req.params.id, function (err, obj) {
-    if (err) return next(err);
-    res.json(obj);
-  });
+	Space.findById(req.params.id, function (err, obj) {
+		if (err) return next(err);
+		res.json(obj);
+	});
 });
 
 /* PUT /spaces/:id */
 router.put('/:id', function(req, res, next) {
-  Space.findByIdAndUpdate(req.params.id, req.body, function (err, obj) {
-    if (err) return next(err);
-    res.json(obj);
-  });
+	delete req.body._id;
+	Space.findByIdAndUpdate(req.params.id, req.body, function (err, obj) {
+		if (err) return next(err);
+		res.json(obj);
+	});
 });
 
 /* DELETE /spaces/:id */
 router.delete('/:id', function(req, res, next) {
-  Space.findByIdAndRemove(req.params.id, req.body, function (err, obj) {
-    if (err) return next(err);
-    res.json(obj);
-  });
+	Space.findByIdAndRemove(req.params.id, req.body, function (err, obj) {
+		if (err) return next(err);
+		res.json(obj);
+	});
 });
 
 module.exports = router;
